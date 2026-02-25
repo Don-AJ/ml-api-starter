@@ -20,3 +20,5 @@ class PredictRequest(BaseModel):
 class PredictResponse(BaseModel):
     prediction: int
     probability_class_1: float
+    model_version: str
+    environment: str

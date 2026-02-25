@@ -10,6 +10,13 @@ from app.model_loader import load_model
 from app.logging_config import setup_logging
 from contextlib import asynccontextmanager
 
+
+MODEL_VERSION = os.getenv("MODEL_VERSION", "0.0.0")
+APP_ENV = os.getenv("APP_ENV", "development")
+
+
+
+
 setup_logging()
 logger = logging.getLogger("ml-api")
 
@@ -29,6 +36,7 @@ app = FastAPI(
     title="ML API Starter",
     version="0.2.0",
     lifespan=lifespan
+)  
 
 # @app.on_event("startup")
 # def startup_event():
@@ -39,6 +47,20 @@ app = FastAPI(
 #     except Exception as e:
 #         logger.exception("Failed to load model.")
 #         raise e
+
+
+@app.middleware("http")
+async def log_request_time(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    duration = round((time.time() - start_time) * 1000, 2)
+
+    logger.info(
+    f"request_complete path={request.url.path} method={request.method} "
+    f"status={response.status_code} duration_ms={duration}"
+            )
+
+    return response
 
 
 @app.get("/health")
@@ -65,39 +87,19 @@ def predict(payload: PredictRequest):
             "Prediction made | pred=%s proba=%.4f", pred, proba
         )
 
-        return PredictResponse(prediction=pred, probability_class_1=proba)
+        return PredictResponse(
+            prediction=pred,
+            probability_class_1=proba,
+            model_version=MODEL_VERSION,
+            environment=APP_ENV,
+        )
 
     except HTTPException:
         raise
     except Exception as e:
         logger.exception("Prediction failed.")
         raise HTTPException(status_code=500, detail="Prediction failed") from e
+    
+    
 
-@app.middleware("http")
-async def log_request_time(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    duration = round((time.time() - start_time) * 1000, 2)
-
-    logger.info(
-        "request_complete",
-        extra={
-            "path": request.url.path,
-            "method": request.method,
-            "status_code": response.status_code,
-            "duration_ms": duration,
-        },
-    )
-
-    return response
-
-MODEL_VERSION = os.getenv("MODEL_VERSION", "0.0.0")
-APP_ENV = os.getenv("APP_ENV", "development")
-
-return {
-    "prediction": pred,
-    "probability_class_1": proba,
-    "model_version": MODEL_VERSION,
-    "environment": APP_ENV
-}
 
