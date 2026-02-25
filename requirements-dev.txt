@@ -1,0 +1,4 @@
+# tests (optional in prod image, fine for now)
+pytest==9.0.2
+httpx==0.28.1
+-r requirements.txt
