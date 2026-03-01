@@ -62,6 +62,14 @@ async def log_request_time(request: Request, call_next):
 
     return response
 
+@app.get("/")
+def root():
+    return {
+        "message": "ML API Starter is live",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
 
 @app.get("/health")
 def health_check():
