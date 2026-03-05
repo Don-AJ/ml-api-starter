@@ -1,4 +1,4 @@
-![CI](https://github.com/Don-AJ/ml-api-starter/actions/workflows/ci.yml/badge.svg)
+![CI/CD pipeline status badge for ml-api-starter repository showing GitHub Actions workflow result](https://github.com/Don-AJ/ml-api-starter/actions/workflows/ci.yml/badge.svg)
 
 # ML API Starter — Breast Cancer Prediction (FastAPI + Docker)
 
