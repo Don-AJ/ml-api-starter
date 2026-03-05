@@ -17,9 +17,10 @@ Built with validation, logging, request timing middleware, and containerized for
 ---
 
 ## Live API
-- Base URL: 
+- Base URL: `https://ml-api-starter.onrender.com/`
 - Docs (Swagger): `https://ml-api-starter.onrender.com/docs`
 - Health: `https://ml-api-starter.onrender.com/health`
+- Predict: `https://ml-api-starter.onrender.com/docs#/default/predict_predict_post`
 
 ---
 
