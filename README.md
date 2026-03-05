@@ -1,3 +1,5 @@
+![CI](https://github.com/Don-AJ/ml-api-starter/actions/workflows/ci.yml/badge.svg)
+
 # ML API Starter — Breast Cancer Prediction (FastAPI + Docker)
 
 A production-minded ML inference microservice that serves a trained scikit-learn classifier via a FastAPI API.  

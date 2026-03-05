@@ -1,20 +1,17 @@
-from fastapi import FastAPI, HTTPException
-import numpy as np
 import logging
 import os
 import time
-
-from fastapi import Request
-from app.schemas import PredictRequest, PredictResponse
-from app.model_loader import load_model
-from app.logging_config import setup_logging
 from contextlib import asynccontextmanager
 
+import numpy as np
+from fastapi import FastAPI, HTTPException, Request
+
+from app.logging_config import setup_logging
+from app.model_loader import load_model
+from app.schemas import PredictRequest, PredictResponse
 
 MODEL_VERSION = os.getenv("MODEL_VERSION", "0.0.0")
 APP_ENV = os.getenv("APP_ENV", "development")
-
-
 
 
 setup_logging()
@@ -32,11 +29,8 @@ async def lifespan(app: FastAPI):
     logger.info("Model loaded successfully.")
     yield
 
-app = FastAPI(
-    title="ML API Starter",
-    version="0.2.0",
-    lifespan=lifespan
-)  
+
+app = FastAPI(title="ML API Starter", version="0.2.0", lifespan=lifespan)
 
 # @app.on_event("startup")
 # def startup_event():
@@ -56,19 +50,16 @@ async def log_request_time(request: Request, call_next):
     duration = round((time.time() - start_time) * 1000, 2)
 
     logger.info(
-    f"request_complete path={request.url.path} method={request.method} "
-    f"status={response.status_code} duration_ms={duration}"
-            )
+        f"request_complete path={request.url.path} method={request.method} "
+        f"status={response.status_code} duration_ms={duration}"
+    )
 
     return response
 
+
 @app.get("/")
 def root():
-    return {
-        "message": "ML API Starter is live",
-        "docs": "/docs",
-        "health": "/health"
-    }
+    return {"message": "ML API Starter is live", "docs": "/docs", "health": "/health"}
 
 
 @app.get("/health")
@@ -91,9 +82,7 @@ def predict(payload: PredictRequest):
         proba = float(model.predict_proba(X)[0, 1])
         pred = int(model.predict(X)[0])
 
-        logger.info(
-            "Prediction made | pred=%s proba=%.4f", pred, proba
-        )
+        logger.info("Prediction made | pred=%s proba=%.4f", pred, proba)
 
         return PredictResponse(
             prediction=pred,
@@ -107,7 +96,3 @@ def predict(payload: PredictRequest):
     except Exception as e:
         logger.exception("Prediction failed.")
         raise HTTPException(status_code=500, detail="Prediction failed") from e
-    
-    
-
-

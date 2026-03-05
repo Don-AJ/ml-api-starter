@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 
-N_FEATURES = 30   #defensive engineering
+N_FEATURES = 30  # defensive engineering
+
 
 class PredictRequest(BaseModel):
     # Exact number of features required
