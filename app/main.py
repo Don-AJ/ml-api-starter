@@ -86,11 +86,13 @@ def predict(payload: PredictRequest):
         proba = float(model.predict_proba(X)[0, 1])
         pred = int(model.predict(X)[0])
 
-        logger.info("Prediction made | pred=%s proba=%.4f", pred, proba)
+        logger.info("Prediction made", extra={"pred": pred, "proba": probagit})
 
         return {
             "prediction": pred,
-            "model_version": MODEL_VERSION
+            "model_version": MODEL_VERSION,
+            "environment": ENVIRONMENT,
+            "probability_class_1": proba,  # proba if available
 }
 
     except HTTPException:
