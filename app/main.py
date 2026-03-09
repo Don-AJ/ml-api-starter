@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import logging
 import os
 import time
@@ -10,9 +11,12 @@ from app.logging_config import setup_logging
 from app.model_loader import load_model
 from app.schemas import PredictRequest, PredictResponse
 
-MODEL_VERSION = os.getenv("MODEL_VERSION", "0.0.0")
-APP_ENV = os.getenv("APP_ENV", "development")
 
+load_dotenv()
+
+APP_NAME = os.getenv("APP_NAME")
+MODEL_VERSION = os.getenv("MODEL_VERSION")
+ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 setup_logging()
 logger = logging.getLogger("ml-api")
@@ -84,12 +88,10 @@ def predict(payload: PredictRequest):
 
         logger.info("Prediction made | pred=%s proba=%.4f", pred, proba)
 
-        return PredictResponse(
-            prediction=pred,
-            probability_class_1=proba,
-            model_version=MODEL_VERSION,
-            environment=APP_ENV,
-        )
+        return {
+            "prediction": pred,
+            "model_version": MODEL_VERSION
+}
 
     except HTTPException:
         raise
